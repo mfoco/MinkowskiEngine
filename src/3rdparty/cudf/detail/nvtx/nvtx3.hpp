@@ -1826,7 +1826,7 @@ class domain_process_range {
    */
   ~domain_process_range() noexcept
   {
-    if (not moved_from_) { nvtxRangeEnd(range_id_); }
+    if (!moved_from_) { nvtxRangeEnd(range_id_); }
   }
 
   domain_process_range(domain_process_range const&) = delete;
