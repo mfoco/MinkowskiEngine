@@ -46,7 +46,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-remap_inverse_map(map_type __restrict__ map,                       //
+remap_inverse_map(map_type map,                                    //
                   coordinate_type const *__restrict__ coordinates, //
                   index_type *__restrict__ inverse_map,            //
                   size_type const num_threads,                     //
@@ -68,7 +68,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-insert_and_map_kernel(map_type __restrict__ map,                       //
+insert_and_map_kernel(map_type map,                                    //
                       coordinate_type const *__restrict__ coordinates, //
                       index_type *__restrict__ valid_map_index,        //
                       index_type *__restrict__ valid_row_index,        //
@@ -501,7 +501,7 @@ template <typename coordinate_type, //
           typename map_type>
 __global__ void kernel_region_insert(
     size_type const num_threads,                                //
-    map_type __restrict__ out_map,                              //
+    map_type out_map,                                           //
     coordinate_type const *const __restrict__ p_in_coordinates, //
     index_type const *const __restrict__ in_valid_row_index,    //
     coordinate_type *__restrict__ p_out_coordinates,            //
@@ -894,7 +894,7 @@ template <typename coordinate_field_type, //
 __global__ void origin_field_map_kernel(
     size_type const num_threads,                              //
     coordinate_field_type const *__restrict__ d_field_coords, //
-    map_type const __restrict__ origin_map,                   //
+    map_type const origin_map,                                //
     index_type *__restrict__ p_in_maps,                       //
     index_type *__restrict__ p_out_maps,                      //
     index_type *__restrict__ p_kernels,                       //
@@ -993,7 +993,7 @@ __global__ void prune_copy_and_insert(
     coordinate_type const *const __restrict__ in_coordinates, //
     bool const *const __restrict__ keep_begin,                //
     index_type const *const __restrict__ inclusive_scan_keep, //
-    map_type __restrict__ out_map,                            //
+    map_type out_map,                                         //
     coordinate_type *__restrict__ out_coordinates,            //
     index_type *__restrict__ out_valid_row_index,             //
     index_type *__restrict__ out_valid_map_offset             //
@@ -1033,7 +1033,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void remap(size_type const num_threads,                  //
-                      map_type const __restrict__ out_map,          //
+                      map_type const out_map,                       //
                       index_type *__restrict__ out_valid_map_offset //
 ) {
   auto const tx = threadIdx.x;
@@ -1144,7 +1144,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-copy_coordinates_by_offset(map_type __restrict__ map,                  //
+copy_coordinates_by_offset(map_type map,                               //
                            coordinate_type *__restrict__ coordinates,  //
                            index_type const *__restrict__ map_offsets, //
                            size_type const num_threads,                //
@@ -1169,7 +1169,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void copy_coordinates_by_valid_row(
-    // map_type __restrict__ map,                          //
+    // map_type map,                                       //
     coordinate_type const *__restrict__ in_coordinates, //
     coordinate_type *__restrict__ out_coordinates,      //
     index_type const *__restrict__ valid_row,           //
@@ -1194,7 +1194,7 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void insert_and_map_kernel_with_offset(
-    map_type __restrict__ map,                       //
+    map_type map,                                    //
     coordinate_type const *__restrict__ coordinates, //
     index_type const coordinate_row_offset,          //
     index_type *__restrict__ valid_map_index,        //
@@ -1312,8 +1312,8 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-count_kernel(map_type const __restrict__ in_map,                       //
-             map_type const __restrict__ out_map,                      //
+count_kernel(map_type const in_map,                                    //
+             map_type const out_map,                                   //
              index_type const *const __restrict__ out_valid_map_index, //
              size_type const num_threads,                              //
              gpu_kernel_region<coordinate_type> kernel,                //
@@ -1376,8 +1376,8 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void preallocated_kernel_map_iteration(
-    map_type const __restrict__ in_map,                                     //
-    map_type const __restrict__ out_map,                                    //
+    map_type const in_map,                                                  //
+    map_type const out_map,                                                 //
     index_type const *const __restrict__ out_valid_map_index,               //
     size_type const num_threads,                                            //
     gpu_kernel_region<coordinate_type> kernel,                              //
@@ -1448,8 +1448,8 @@ template <typename coordinate_type, //
           typename map_type>
 __global__ void
 direct_in_out_map(size_type const num_threads,                               //
-                  map_type const __restrict__ in_map,                        //
-                  map_type const __restrict__ out_map,                       //
+                  map_type const in_map,                                     //
+                  map_type const out_map,                                    //
                   index_type const *const __restrict__ out_valid_map_offset, //
                   index_type *__restrict__ p_in_maps,                        //
                   index_type *__restrict__ p_out_maps,
@@ -1476,8 +1476,8 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-direct_kernel_map(map_type const __restrict__ in_map,                       //
-                  map_type const __restrict__ out_map,                      //
+direct_kernel_map(map_type const in_map,                                    //
+                  map_type const out_map,                                   //
                   index_type const *const __restrict__ out_valid_map_index, //
                   size_type const num_threads,                              //
                   gpu_kernel_region<coordinate_type> kernel,                //
@@ -1751,8 +1751,8 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-stride_map_kernel(map_type const __restrict__ in_map,                      //
-                  map_type const __restrict__ out_map,                     //
+stride_map_kernel(map_type const in_map,                                   //
+                  map_type const out_map,                                  //
                   index_type const *const __restrict__ in_valid_map_index, //
                   size_type const num_threads,                             //
                   index_type const *const __restrict__ stride,             //
@@ -1881,8 +1881,8 @@ template <typename coordinate_type, //
           typename index_type,      //
           typename map_type>
 __global__ void
-origin_map_kernel(map_type const __restrict__ in_map,                      //
-                  map_type const __restrict__ origin_map,                  //
+origin_map_kernel(map_type const in_map,                                   //
+                  map_type const origin_map,                               //
                   index_type const *const __restrict__ in_valid_map_index, //
                   size_type const num_threads,                             //
                   index_type *__restrict__ p_in_maps,                      //
@@ -1975,7 +1975,7 @@ template <typename coordinate_type,
           typename float_type,  //
           typename map_type>
 __global__ void
-interpolation_kernel(map_type __restrict__ in_map,                    //
+interpolation_kernel(map_type in_map,                                 //
                      index_type const num_threads,                    //
                      float_type const *__restrict__ p_tfield,         //
                      index_type *__restrict__ p_in_maps,              //
@@ -2057,7 +2057,7 @@ template <typename coordinate_type,
           typename float_type,  //
           typename map_type>
 __global__ void
-field_map_kernel(map_type __restrict__ in_map,                    //
+field_map_kernel(map_type in_map,                                 //
                  index_type const num_threads,                    //
                  float_type const *__restrict__ p_tfield,         //
                  index_type *__restrict__ p_in_maps,              //
@@ -2354,8 +2354,8 @@ template <typename coordinate_type, //
           typename map_type>
 __global__ void
 union_map_kernel(size_type const num_threads,                             //
-                 map_type const __restrict__ in_map,                      //
-                 map_type const __restrict__ union_map,                   //
+                 map_type const in_map,                                   //
+                 map_type const union_map,                                //
                  index_type const *const __restrict__ in_valid_map_index, //
                  tensor_type *__restrict__ p_in_maps,                     //
                  tensor_type *__restrict__ p_union_maps,
