@@ -226,9 +226,9 @@ template <typename coordinate_type> struct coordinate_equal_to {
   MINK_CUDA_HOST_DEVICE inline bool
   operator()(coordinate<coordinate_type> const &lhs,
              coordinate<coordinate_type> const &rhs) const {
-    if ((lhs.data() == nullptr) and (rhs.data() == nullptr))
+    if ((lhs.data() == nullptr) && (rhs.data() == nullptr))
       return true;
-    if ((lhs.data() == nullptr) xor (rhs.data() == nullptr))
+    if ((lhs.data() == nullptr) != (rhs.data() == nullptr))
       return false;
     for (size_t i = 0; i < coordinate_size; i++) {
       if (lhs[i] != rhs[i])

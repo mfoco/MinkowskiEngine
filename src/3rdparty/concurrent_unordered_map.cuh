@@ -72,8 +72,8 @@ template <typename pair_type,
           typename value_type = typename pair_type::second_type>
 constexpr bool is_packable()
 {
-  return std::is_integral<key_type>::value and std::is_integral<value_type>::value and
-         not std::is_void<packed_t<pair_type>>::value;
+  return std::is_integral<key_type>::value && std::is_integral<value_type>::value &&
+         !std::is_void<packed_t<pair_type>>::value;
 }
 
 /**
@@ -302,7 +302,7 @@ class concurrent_unordered_map {
    * @return Enum indicating result of insert attempt.
    **/
   template <typename pair_type = value_type>
-  __device__ std::enable_if_t<not is_packable<pair_type>(), insert_result> attempt_insert(
+  __device__ std::enable_if_t<!is_packable<pair_type>(), insert_result> attempt_insert(
     value_type* const __restrict__ insert_location, value_type const& insert_pair)
   {
     key_type const old_key{atomicCAS(&(insert_location->first), m_unused_key, insert_pair.first)};

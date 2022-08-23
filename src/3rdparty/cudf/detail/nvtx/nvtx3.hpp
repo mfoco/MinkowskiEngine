@@ -527,7 +527,7 @@ namespace detail {
 template <typename T>
 constexpr auto has_name_member() noexcept -> decltype(T::name, bool())
 {
-  return (std::is_same<char const*, typename std::decay<decltype(T::name)>::type>::value or
+  return (std::is_same<char const*, typename std::decay<decltype(T::name)>::type>::value ||
           std::is_same<wchar_t const*, typename std::decay<decltype(T::name)>::type>::value);
 }
 }  // namespace detail
@@ -1737,7 +1737,7 @@ class domain_thread_range {
   template <typename First,
             typename... Args,
             typename = typename std::enable_if<
-              not std::is_same<event_attributes, typename std::decay<First>>::value>>
+              !std::is_same<event_attributes, typename std::decay<First>>::value>>
   explicit domain_thread_range(First const& first, Args const&... args) noexcept
     : domain_thread_range{event_attributes{first, args...}}
   {
@@ -1808,7 +1808,7 @@ class domain_process_range {
   template <typename First,
             typename... Args,
             typename = typename std::enable_if<
-              not std::is_same<event_attributes, typename std::decay<First>>::value>>
+              !std::is_same<event_attributes, typename std::decay<First>>::value>>
   explicit domain_process_range(First const& first, Args const&... args) noexcept
     : domain_process_range{event_attributes{first, args...}}
   {

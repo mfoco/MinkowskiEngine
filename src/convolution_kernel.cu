@@ -51,7 +51,7 @@ bool check_direct_gemm_forward(MinkowskiAlgorithm::Mode const algo_index, //
     return true;
   if (convolution_mode == ConvolutionMode::COPY_GEMM)
     return false;
-  if (sA == 32 && sB == 64 and N <= 490537) return true;
+  if (sA == 32 && sB == 64 && N <= 490537) return true;
   if (sB <= 40) {
     if (sB <= 20) {
       return true;
@@ -83,7 +83,7 @@ bool check_direct_gemm_backward(MinkowskiAlgorithm::Mode const algo_index, //
     return true;
   if (convolution_mode == ConvolutionMode::COPY_GEMM)
     return false;
-  if (sA == 32 && sB == 64 and N <= 490537) return true;
+  if (sA == 32 && sB == 64 && N <= 490537) return true;
   if (sB <= 40) {
     if (sA <= 20)
       return true;

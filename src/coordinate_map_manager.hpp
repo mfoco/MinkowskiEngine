@@ -459,7 +459,7 @@ public:
                 CoordinateMapKey const *p_strided_map_key);
 
   size_t origin_map_size() {
-    ASSERT(m_coordinate_maps.size() > 0 or m_field_coordinates.size() > 0,
+    ASSERT(m_coordinate_maps.size() > 0 || m_field_coordinates.size() > 0,
            "No coordinate map found.");
     if (m_coordinate_maps.size() > 0) {
       auto const key = origin().first;
