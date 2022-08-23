@@ -65,7 +65,8 @@ from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CppExtension, CUDAExtension
 
 if platform == "win32":
-    raise ImportError("Windows is currently not supported.")
+    if "CC" not in os.environ:
+        os.environ["CC"] = "cl.exe"
 elif platform == "darwin":
     # Set the distutils to use clang instead of g++ for valid std
     if "CC" not in os.environ:
@@ -163,7 +164,7 @@ else:
 if not (CUDA_HOME is False):  # False when not set, str otherwise
     print(f"Using CUDA_HOME={CUDA_HOME}")
 
-if sys.platform == "win32":
+if platform == "win32":
     vc_version = os.getenv("VCToolsVersion", "")
     if vc_version.startswith("14.16."):
         CC_FLAGS += ["/sdl"]
@@ -171,9 +172,8 @@ if sys.platform == "win32":
         CC_FLAGS += ["/sdl", "/permissive-"]
 else:
     CC_FLAGS += ["-fopenmp"]
-
-if "darwin" in platform:
-    CC_FLAGS += ["-stdlib=libc++", "-std=c++17"]
+    if "darwin" in platform:
+        CC_FLAGS += ["-stdlib=libc++", "-std=c++17"]
 
 NVCC_FLAGS += ["--expt-relaxed-constexpr", "--expt-extended-lambda"]
 FAST_MATH, argv = _argparse("--fast_math", argv)
@@ -185,7 +185,10 @@ if not (BLAS is False):  # False only when not set, str otherwise
     assert BLAS in BLAS_LIST, f"Blas option {BLAS} not in valid options {BLAS_LIST}"
     if BLAS == "mkl":
         libraries.append("mkl_rt")
-        CC_FLAGS.append("-DUSE_MKL")
+        if platform == "win32":
+            CC_FLAGS.append("/DUSE_MKL")
+        else:
+            CC_FLAGS.append("-DUSE_MKL")
         NVCC_FLAGS.append("-DUSE_MKL")
     else:
         libraries.append(BLAS)
@@ -285,11 +288,15 @@ else:
     print("Using the default compiler")
 
 if debug:
-    CC_FLAGS += ["-g", "-DDEBUG"]
-    NVCC_FLAGS += ["-g", "-DDEBUG", "-Xcompiler=-fno-gnu-unique"]
+    if platform == "win32":
+        CC_FLAGS += ["/DDEBUG", "/D_DEBUG"]
+        NVCC_FLAGS += ["-g", "-DDEBUG", "-D_DEBUG"]
+    else:
+        CC_FLAGS += ["-g", "-DDEBUG"]
+        NVCC_FLAGS += ["-g", "-DDEBUG", "-Xcompiler=-fno-gnu-unique"]
 else:
-    CC_FLAGS += ["-O3"]
-    NVCC_FLAGS += ["-O3", "-Xcompiler=-fno-gnu-unique"]
+    CC_FLAGS += ["/OX"]
+    NVCC_FLAGS += ["-O3"]
 
 if "MAX_JOBS" not in os.environ and os.cpu_count() > MAX_COMPILATION_THREADS:
     # Clip the num compilation thread to 8
