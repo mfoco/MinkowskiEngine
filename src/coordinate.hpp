@@ -296,7 +296,7 @@ template <typename coordinate_type> struct coordinate_murmur3 {
   MINK_CUDA_HOST_DEVICE result_type
   operator()(coordinate<coordinate_type> const &key) const {
     uint8_t const *data   = reinterpret_cast<uint8_t const *>(key.data());
-    size_t const nblocks  = len / 4;
+    int const nblocks  = len / 4;
     result_type h1        = m_seed;
     constexpr uint32_t c1 = 0xcc9e2d51;
     constexpr uint32_t c2 = 0x1b873593;
@@ -310,7 +310,7 @@ template <typename coordinate_type> struct coordinate_murmur3 {
     //----------
     // body
     uint32_t const *const blocks = (uint32_t const *)(data + nblocks * 4);
-    for (size_t i = -nblocks; i; i++) {
+    for (int i = -nblocks; i; i++) {
       uint32_t k1 = getblock32(blocks, i);
       k1 *= c1;
       k1 = rotl32(k1, 15);
