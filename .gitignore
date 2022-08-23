@@ -9,3 +9,4 @@ build/
 objs/
 dist/
 MinkowskiEngine.egg-info/
+.vscode/

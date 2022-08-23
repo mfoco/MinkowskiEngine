@@ -120,7 +120,8 @@ def _argparse(pattern, argv, is_flag=True, is_list=False):
                 return arr[0].split("=")[1], argv
 
 
-run_command("rm", "-rf", "build")
+if platform != "win32":
+    run_command("rm", "-rf", "build")
 run_command("pip", "uninstall", "MinkowskiEngine", "-y")
 
 # For cpu only build
@@ -295,7 +296,7 @@ if debug:
         CC_FLAGS += ["-g", "-DDEBUG"]
         NVCC_FLAGS += ["-g", "-DDEBUG", "-Xcompiler=-fno-gnu-unique"]
 else:
-    CC_FLAGS += ["/OX"]
+    CC_FLAGS += ["/Ox"]
     NVCC_FLAGS += ["-O3"]
 
 if "MAX_JOBS" not in os.environ and os.cpu_count() > MAX_COMPILATION_THREADS:
