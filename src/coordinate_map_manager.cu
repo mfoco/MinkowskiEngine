@@ -91,7 +91,7 @@ struct insert_and_map_functor<coordinate_type, coordinate_field_type,
 
     LOG_DEBUG("cuda_copy_n with num_blocks:", num_blocks,
               "mapping.size():", mapping.size());
-    detail::cuda_copy_n<default_types::index_type, int64_t>
+    cuda_copy_n<default_types::index_type, int64_t>
         <<<num_blocks, CUDA_NUM_THREADS>>>(mapping.cbegin(), mapping.size(),
                                            th_mapping.data_ptr<int64_t>());
 
@@ -101,7 +101,7 @@ struct insert_and_map_functor<coordinate_type, coordinate_field_type,
     LOG_DEBUG("cuda_copy_n with num_inv_blocks:", num_inv_blocks,
               "inverse_mapping.size():", inverse_mapping.size());
     if (inverse_mapping.size() > 0) {
-      detail::cuda_copy_n<default_types::index_type, int64_t>
+      cuda_copy_n<default_types::index_type, int64_t>
           <<<num_inv_blocks, CUDA_NUM_THREADS>>>(
               inverse_mapping.cbegin(), inverse_mapping.size(),
               th_inverse_mapping.data_ptr<int64_t>());
@@ -147,12 +147,12 @@ struct stride_map2tensor_functor<
 
     LOG_DEBUG("cuda_copy_n with num_blocks:", num_blocks,
               "mapping size:", out_size);
-    detail::cuda_copy_n<default_types::index_type, int64_t>
+    cuda_copy_n<default_types::index_type, int64_t>
         <<<num_blocks, CUDA_NUM_THREADS>>>(stride_kernel_map.in_maps.begin(),
                                            out_size,
                                            th_in_map.data_ptr<int64_t>());
 
-    detail::cuda_copy_n<default_types::index_type, int64_t>
+    cuda_copy_n<default_types::index_type, int64_t>
         <<<num_blocks, CUDA_NUM_THREADS>>>(stride_kernel_map.out_maps.begin(),
                                            out_size,
                                            th_out_map.data_ptr<int64_t>());
