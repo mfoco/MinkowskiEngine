@@ -267,7 +267,7 @@ class concurrent_unordered_map {
     CONTINUE,  ///< Insert did not succeed, continue trying to insert
                ///< (collision)
     SUCCESS,   ///< New pair inserted successfully
-    DUPLICATE  ///< Insert did not succeed, key is already present
+    DUPLICATED ///< Insert did not succeed, key is already present
   };
 
   /**
@@ -277,45 +277,32 @@ class concurrent_unordered_map {
    *a type where atomicCAS is natively supported, this optimization path
    *will insert the pair in a single atomicCAS operation.
    **/
-  template <typename pair_type = value_type>
-  __device__ std::enable_if_t<is_packable<pair_type>(), insert_result> attempt_insert(
+  __device__ insert_result attempt_insert(
     value_type* insert_location, value_type const& insert_pair)
   {
-    pair_packer<pair_type> const unused{thrust::make_pair(m_unused_key, m_unused_element)};
-    pair_packer<pair_type> const new_pair{insert_pair};
-    pair_packer<pair_type> const old{
-      atomicCAS(reinterpret_cast<typename pair_packer<pair_type>::packed_type*>(insert_location),
-                unused.packed,
-                new_pair.packed)};
+    if constexpr (is_packable<value_type>()) {
+      pair_packer<value_type> const unused{thrust::make_pair(m_unused_key, m_unused_element)};
+      pair_packer<value_type> const new_pair{insert_pair};
+      pair_packer<value_type> const old{
+        atomicCAS(reinterpret_cast<typename pair_packer<value_type>::packed_type*>(insert_location),
+                  unused.packed,
+                  new_pair.packed)};
 
-    if (old.packed == unused.packed) { return insert_result::SUCCESS; }
+      if (old.packed == unused.packed) { return insert_result::SUCCESS; }
 
-    if (m_equal(old.pair.first, insert_pair.first)) { return insert_result::DUPLICATE; }
-    return insert_result::CONTINUE;
-  }
+      if (m_equal(old.pair.first, insert_pair.first)) { return insert_result::DUPLICATED; }
+    } else {
+      key_type const old_key{atomicCAS(&(insert_location->first), m_unused_key, insert_pair.first)};
 
-  /**
-   * @brief Atempts to insert a key,value pair at the specified hash bucket.
-   *
-   * @param[in] insert_location Pointer to hash bucket to attempt insert
-   * @param[in] insert_pair The pair to insert
-   * @return Enum indicating result of insert attempt.
-   **/
-  template <typename pair_type = value_type>
-  __device__ std::enable_if_t<!is_packable<pair_type>(), insert_result> attempt_insert(
-    value_type* const __restrict__ insert_location, value_type const& insert_pair)
-  {
-    key_type const old_key{atomicCAS(&(insert_location->first), m_unused_key, insert_pair.first)};
+      // Hash bucket empty
+      if (m_equal(m_unused_key, old_key)) {
+        insert_location->second = insert_pair.second;
+        return insert_result::SUCCESS;
+      }
 
-    // Hash bucket empty
-    if (m_equal(m_unused_key, old_key)) {
-      insert_location->second = insert_pair.second;
-      return insert_result::SUCCESS;
+      // Key already exists
+      if (m_equal(old_key, insert_pair.first)) { return insert_result::DUPLICATED; }
     }
-
-    // Key already exists
-    if (m_equal(old_key, insert_pair.first)) { return insert_result::DUPLICATE; }
-
     return insert_result::CONTINUE;
   }
 
