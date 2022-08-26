@@ -93,8 +93,6 @@ torch::Tensor coo_spmm(torch::Tensor const &rows, torch::Tensor const &cols,
                        int64_t const spmm_algorithm_id, bool const is_sorted) {
 #if defined __HIP_PLATFORM_HCC__
   TORCH_CHECK(false, "spmm sparse-dense is not supported on HIP");
-#elif defined(_WIN32) || defined(_WIN64)
-  TORCH_CHECK(false, "spmm sparse-dense CUDA is not supported on Windows");
 #elif !defined(CUDART_VERSION)
   TORCH_CHECK(false, "CUDART_VERSION not defined");
 #endif
@@ -311,10 +309,10 @@ torch::Tensor coo_spmm(torch::Tensor const &rows, torch::Tensor const &cols,
                                 (void *)&beta_val, result_descr,  //
                                 cuda_data_type, mm_alg, workspace_buffer));
 
-#ifdef DEBUG
-    LOG_DEBUG("SPMM", cudaDeviceSynchronize());
-    CUDA_CHECK_DEBUG(cudaDeviceSynchronize());
-#endif
+// #ifdef DEBUG
+//     LOG_DEBUG("SPMM", cudaDeviceSynchronize());
+//     CUDA_CHECK_DEBUG(cudaDeviceSynchronize());
+// #endif
 
     // Cleanup
     CUSPARSE_CHECK(cusparseDestroySpMat(sparse_descr));
@@ -355,8 +353,6 @@ coo_spmm_average(torch::Tensor const &rows, torch::Tensor const &cols,
                  torch::Tensor const &mat2, int64_t const spmm_algorithm_id) {
 #if defined __HIP_PLATFORM_HCC__
   TORCH_CHECK(false, "spmm sparse-dense is not supported on HIP");
-#elif defined(_WIN32) || defined(_WIN64)
-  TORCH_CHECK(false, "spmm sparse-dense CUDA is not supported on Windows");
 #elif !defined(CUDART_VERSION)
   TORCH_CHECK(false, "CUDART_VERSION not defined");
 #endif
