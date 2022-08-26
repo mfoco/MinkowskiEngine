@@ -161,6 +161,7 @@ else:
     print("--------------------------------")
     # system python installation
     libraries.append("cusparse")
+    libraries.append("cublas")
 
 if not (CUDA_HOME is False):  # False when not set, str otherwise
     print(f"Using CUDA_HOME={CUDA_HOME}")
@@ -318,6 +319,7 @@ ext_modules = [
         sources=[*[str(SRC_PATH / src_file) for src_file in SRC_FILES], *BIND_FILES],
         extra_compile_args={"cxx": CC_FLAGS, "nvcc": NVCC_FLAGS},
         libraries=libraries,
+        library_dirs=BLAS_LIBRARY_DIRS
     ),
 ]
 
