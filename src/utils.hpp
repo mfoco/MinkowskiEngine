@@ -72,11 +72,6 @@ std::ostream &operator<<(std::ostream &out, const thrust::host_vector<T> &v) {
 }
 #endif
 
-template <typename T>
-std::ostream &operator<<(std::ostream &out, const std::vector<T> &v) {
-  return print_vector(out, v);
-}
-
 template <typename T> std::string ArrToString(const T &arr) {
   std::string buf = "[";
   for (const auto &a : arr) {
@@ -106,11 +101,15 @@ public:
   }
 
   template <typename Type> void append(Type value) { stream_ << value; }
+  template <typename T> void append(const std::vector<T> &value) {
+    print_vector(stream_, value);
+  }
 
   // Recursively append arguments
   template <typename Type, typename... Args>
   void append(Type value, Args... args) {
-    stream_ << value << " ";
+    append(value);
+    stream_ << " ";
     append(args...);
   }
 
